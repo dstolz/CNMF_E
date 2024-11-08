@@ -1,5 +1,5 @@
-function stitch_avi(ffn_in,ffn_stitched,firstConvert)
-% stitch_avi(ffn_in,ffn_stitched,[firstConvert])
+function stitch_avi(ffn_in,ffn_stitched,setFrameRate,firstConvert)
+% stitch_avi(ffn_in,ffn_stitched,[setFrameRate],[firstConvert])
 % 
 % uses ffmpeg to create lossless compression of movies and then stitch them
 % together.
@@ -12,10 +12,12 @@ function stitch_avi(ffn_in,ffn_stitched,firstConvert)
 % ffn_stitched : supplied filename to write the final stitched file
 % firstConvert : first runs, ffmpeg -i "original.avi" -c:v ffv1 -level 3 -preset slow -r 20 "converted.avi"
 
-if nargin < 3 || isempty(firstConvert), firstConvert = false; end
+if nargin < 3, setFrameRate = []; end
+if nargin < 4 || isempty(firstConvert), firstConvert = false; end
 
 ffn_in = cellstr(ffn_in);
 
+assert(~isempty(ffn_in));
 
 tmppth = tempdir;
 
@@ -31,8 +33,13 @@ if firstConvert
     for i = 1:length(ffn_in)
         ffn_tmp{i} = fullfile(tmppth,sprintf("tmp_%i.avi",i));
 
-        cmd_cvt = sprintf('ffmpeg -i "%s" -c:v ffv1 -level 3 -preset slow -r 20 "%s"', ...
-            ffn_in{i},ffn_tmp{i});
+        if isempty(setFrameRate)
+            cmd_cvt = sprintf('ffmpeg -i "%s"  -vf format=gray -c:v ffv1 -level 3 -preset slow "%s"', ...
+                ffn_in{i},ffn_tmp{i});
+        else
+            cmd_cvt = sprintf('ffmpeg -r %d -i "%s"  -vf format=gray -c:v ffv1 -level 3 -preset slow -r %d "%s"', ...
+                setFrameRate,ffn_in{i},setFrameRate,ffn_tmp{i});
+        end
 
         [status,cmdout] = system(cmd_cvt);
 
@@ -48,8 +55,12 @@ cellfun(@(a) fprintf(fid,"file '%s'\n",a),ffn_tmp);
 fclose(fid);
 
 fprintf("stitching ...")
-cmd_stitch = sprintf('ffmpeg -f concat -safe 0 -i "%s" -c copy "%s"',tmpfn,ffn_stitched );
-
+if isempty(setFrameRate)
+    cmd_stitch = sprintf('ffmpeg -f concat -safe 0 -i "%s" -c copy "%s"',tmpfn,ffn_stitched );
+else
+    cmd_stitch = sprintf('ffmpeg -r %d -f concat -safe 0 -i "%s" -c copy -r %d "%s"', ...
+        setFrameRate,tmpfn,setFrameRate,ffn_stitched);
+end
 [status,cmdout] = system(cmd_stitch);
 
 if firstConvert

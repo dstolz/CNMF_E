@@ -14,4 +14,4 @@ pth(i) = [];
 
 pth = join(pth,sep);
 
-r = addpath(pth);
+r = addpath(char(pth));

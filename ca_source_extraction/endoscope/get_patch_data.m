@@ -14,7 +14,10 @@ end
 
 % check whether the code is running on a worker (for parallel processing)
 try
-    isOnWorker = ~isempty(getCurrentTask());
+    % isOnWorker = ~isempty(getCurrentTask()); % DS 11/11/2024, not sure
+    % why this is returning empty despite workers being available. gcp
+    % works.
+    isOnWorker = ~isempty(gcp('nocreate'));
 catch
     isOnWorker = false;
 end

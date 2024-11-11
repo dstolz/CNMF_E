@@ -121,6 +121,7 @@ while and(m>=1, m<=length(ind))
             m= m+1;
         elseif strcmpi(temp, 's')
             try
+                fprintf('Click the plot to outline a neuron\n')
                 subplot(222);
                 temp = imfreehand();
                 tmp_ind = temp.createMask();

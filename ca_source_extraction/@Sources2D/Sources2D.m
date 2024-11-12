@@ -1804,7 +1804,13 @@ classdef Sources2D < handle
             if exist('original_logfile', 'var')
                 obj.P.log_file = original_logfile;
             end
-            evalin('base', sprintf('save(''%s'', ''neuron'', ''save_*'', ''show_*'', ''use_parallel'', ''with_*'', ''-v7.3''); ', file_path));
+
+            try % DS 11/12/2024; try 'base' then try 'caller' function
+                evalin('base', sprintf('save(''%s'', ''neuron'', ''save_*'', ''show_*'', ''use_parallel'', ''with_*'', ''-v7.3''); ', file_path));
+            catch
+                evalin('caller', sprintf('save(''%s'', ''neuron'', ''save_*'', ''show_*'', ''use_parallel'', ''with_*'', ''-v7.3''); ', file_path));
+            end
+
             try
                             log_file = obj.P.log_file;
                 fp = fopen(log_file, 'a');

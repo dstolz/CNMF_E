@@ -60,7 +60,9 @@ for miter=1:maxIter
     for m=1:n_update
         k = ind_update(m);
         ck_raw = C(k, :) + (U(k, :)-V(k, :)*C)/aa(k);     % update ck
-        
+        if all(isnan(ck_raw)) % DS 24-11-23: avoid nans
+            ck_raw = zeros(size(ck_raw),'like',ck_raw);
+        end
         if ~deconv_flag
             % no deconvolution, just thresholding
             ck_raw = ck_raw -min(ck_raw); 

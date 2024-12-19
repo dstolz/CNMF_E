@@ -42,6 +42,7 @@ logy = log(y);
 y2logy = y2.*logy;
 vec1 = ones(1, length(y));
 
+warning('off','MATLAB:illConditionedMatrix')
 warning('off','MATLAB:nearlySingularMatrix'); 
 warning('off','MATLAB:SingularMatrix'); 
 %% fit the curve
@@ -78,6 +79,6 @@ else
     sig = abs(sqrt(-0.5/p(3)));
     A = exp(p(1)-0.25*p(2)^2/p(3));
 end
-
+warning('on','MATLAB:illConditionedMatrix')
 warning('on','MATLAB:nearlySingularMatrix'); 
 warning('on','MATLAB:SingularMatrix'); 

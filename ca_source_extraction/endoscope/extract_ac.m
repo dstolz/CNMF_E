@@ -53,8 +53,23 @@ y_bg = median(Y(tmp_corr(:)<0.3, :), 1); % using the median of the whole field (
 
 %% estimate ai 
 T = length(ci); 
-X = [ones(T,1), y_bg', ci']; 
+X = [ones(T,1), y_bg', ci'];
+
+% DS 11/25/2024: sometimes Y contains nan due to uniformly high local
+% correlation and so a warning is thrown. It's annoying and we can ignore
+% it.
+
+warning('off','MATLAB:illConditionedMatrix')
+warning('off','MATLAB:nearlySingularMatrix'); 
+warning('off','MATLAB:SingularMatrix'); 
+
 temp = (X'*X)\(X'*Y'); 
+
+
+warning('on','MATLAB:illConditionedMatrix')
+warning('on','MATLAB:nearlySingularMatrix'); 
+warning('on','MATLAB:SingularMatrix'); 
+
 ai = max(0, temp(3,:)'); 
 
 % if spatial_constraints.circular

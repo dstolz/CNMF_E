@@ -45,15 +45,15 @@ end
 %handle = title('Correlation image and identified spatial footprints','fontweight','bold','fontsize',14,'fontname',fontname);
 hold on;
 if ~exist('cmap', 'var') || isempty(cmap)
-cmap = hot(3*size(Aor,2));
+    cmap = hot(3*size(Aor,2));
 else
-    cmap = repmat(reshape(ln_col, 1, []), size(Aor,2), 1); 
+    cmap = repmat(reshape(ln_col, 1, []), size(Aor,2), 1);
 end
 if ~(nargin < 6 || isempty(Coor))
     CC = Coor;
     for i = 1:size(Aor,2)
-%         cont = medfilt1(Coor{i}')';
-        cont = Coor{i}; 
+        %         cont = medfilt1(Coor{i}')';
+        cont = Coor{i};
         if size(cont,2) > 1
             plot(cont(1,1:end),cont(2,1:end),'Color',cmap(i+size(Aor,2),:), 'linewidth', ln_wd); hold on;
         end

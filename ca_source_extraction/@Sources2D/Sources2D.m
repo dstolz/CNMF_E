@@ -495,9 +495,11 @@ classdef Sources2D < handle
                 mkdir(folder_nm);
             end
             if with_craw
-                obj.viewNeurons([], obj.C_raw, folder_nm);
+                % obj.viewNeurons([], obj.C_raw, folder_nm);
+                obj.cl_viewNeurons([], obj.C_raw, folder_nm);
             else
-                obj.viewNeurons([], [], folder_nm);
+                % obj.viewNeurons([], [], folder_nm);
+                obj.cl_viewNeurons([], [], folder_nm);
             end
         end
         
@@ -738,6 +740,7 @@ classdef Sources2D < handle
         end
         %% quick view
         ind_del = viewNeurons(obj, ind, C2, folder_nm);
+        ind_del = cl_viewNeurons(obj, ind, C2, folder_nm);
         displayNeurons(obj, ind, C2, folder_nm);
         
         %% function remove false positives
